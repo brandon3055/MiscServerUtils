@@ -31,6 +31,9 @@ version = "${config.mcversion}-${config.mod_version}"
 group = "com.brandon3055.miscserverutils"
 archivesBaseName = "MiscServerUtils"
 
+sourceCompatibility = "1.8"
+targetCompatibility = "1.8"
+
 minecraft {
     version = config.mcversion + "-" + config.forge_version
     runDir = "run"

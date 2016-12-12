@@ -264,7 +264,6 @@ public class ModuleDeleteScheduler extends SUModuleBase {
                 try {
                     NBTTagCompound compound = CommandTPOfflinePlayer.getPlayerCompound(file);
                     if (compound.getInteger("Dimension") == dim) {
-                        LogHelper.dev("Teleport " + file);
                         compound.setInteger("Dimension", 0);
                         NBTTagList posTag = new NBTTagList();
                         posTag.appendTag(new NBTTagDouble(spawn.getX() + 0.5));
@@ -303,7 +302,6 @@ public class ModuleDeleteScheduler extends SUModuleBase {
         text.appendSibling(new TextComponentString(message).setStyle(new Style().setColor(TextFormatting.GREEN)));
 
         for (EntityPlayerMP player : server.getPlayerList().getPlayerList()) {
-            LogHelper.dev(player);
             if (server.getPlayerList().canSendCommands(player.getGameProfile()) && player.canCommandSenderUseCommand(COMMAND_INSTANCE.getRequiredPermissionLevel(), COMMAND_INSTANCE.getCommandName())) {
                 player.addChatMessage(text);
             }
