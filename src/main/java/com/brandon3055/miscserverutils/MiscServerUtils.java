@@ -1,5 +1,6 @@
 package com.brandon3055.miscserverutils;
 
+import com.brandon3055.miscserverutils.commands.CommandListDims;
 import com.brandon3055.miscserverutils.commands.CommandTPOfflinePlayer;
 import com.brandon3055.miscserverutils.modules.ModuleDeleteScheduler;
 import net.minecraftforge.common.MinecraftForge;
@@ -37,6 +38,7 @@ public class MiscServerUtils
     public void serverStart(FMLServerStartingEvent event) {
         ModuleRegistry.registerCommands(event);
         event.registerServerCommand(new CommandTPOfflinePlayer());
+        event.registerServerCommand(new CommandListDims());
     }
 
     @Mod.EventHandler
