@@ -34,6 +34,7 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.time.Instant;
@@ -162,6 +163,9 @@ public class ModuleDeleteScheduler extends SUModuleBase {
         try {
             deletionSchedules = new Gson().fromJson(new FileReader(config), new TypeToken<List<DeletionSchedule>>() {
             }.getType());
+        }
+        catch (FileNotFoundException e) {
+            LogHelper.warn("SUDeletionSchedule.json does not exist! If this is the first load this is normal.");
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -408,7 +412,8 @@ public class ModuleDeleteScheduler extends SUModuleBase {
 
                         try {
                             LogHelper.info("Deleting Dimension Folder: " + dimFolder.getAbsolutePath());
-                            FileUtils.deleteDirectory(dimFolder);
+                            FileUtils.deleteDirectory(new File(dimFolder, "region"));
+                            FileUtils.deleteDirectory(new File(dimFolder, "data"));
                             LogHelper.info("Success! Dimension Deleted!");
                             messageAdmins("Dimension " + scheduledBy.dimension + " Has been Successfully Deleted!");
                             timer = -2;
