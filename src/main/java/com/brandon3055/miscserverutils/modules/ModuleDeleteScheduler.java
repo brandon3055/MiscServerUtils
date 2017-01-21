@@ -407,6 +407,7 @@ public class ModuleDeleteScheduler extends SUModuleBase {
                         LogHelper.info("Deleting Dimension " + scheduledBy.dimension);
 
                         try {
+                            LogHelper.info("Deleting Dimension Folder: " + dimFolder.getAbsolutePath());
                             FileUtils.deleteDirectory(dimFolder);
                             LogHelper.info("Success! Dimension Deleted!");
                             messageAdmins("Dimension " + scheduledBy.dimension + " Has been Successfully Deleted!");
@@ -438,7 +439,7 @@ public class ModuleDeleteScheduler extends SUModuleBase {
         public void prepDimension(WorldServer world) {
             int dim = world.provider.getDimension();
             LogHelper.dev("Preparing to delete dimension " + dim);
-            dimFolder = new File(world.getSaveHandler().getWorldDirectory(), world.provider.getSaveFolder());
+            dimFolder = new File(DimensionManager.getCurrentSaveRootDirectory(), world.provider.getSaveFolder());
 
             ImmutableSetMultimap<ChunkPos, ForgeChunkManager.Ticket> chunks = ForgeChunkManager.getPersistentChunksFor(world);
             for (ForgeChunkManager.Ticket ticket : chunks.values()) {
