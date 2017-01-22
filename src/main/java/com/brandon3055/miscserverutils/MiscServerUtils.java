@@ -2,6 +2,7 @@ package com.brandon3055.miscserverutils;
 
 import com.brandon3055.miscserverutils.commands.CommandListDims;
 import com.brandon3055.miscserverutils.commands.CommandTPOfflinePlayer;
+import com.brandon3055.miscserverutils.modules.ModuleAutoShutdown;
 import com.brandon3055.miscserverutils.modules.ModuleDeleteScheduler;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
@@ -25,6 +26,7 @@ public class MiscServerUtils
 
     private void registerModules() {
         ModuleRegistry.register(new ModuleDeleteScheduler());
+        ModuleRegistry.register(new ModuleAutoShutdown(), false);
     }
 
 

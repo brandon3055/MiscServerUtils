@@ -411,7 +411,7 @@ public class ModuleDeleteScheduler extends SUModuleBase {
                         LogHelper.info("Deleting Dimension " + scheduledBy.dimension);
 
                         try {
-                            LogHelper.info("Deleting Dimension Folder: " + dimFolder.getAbsolutePath());
+                            LogHelper.info("Deleting Dimension Data in: " + dimFolder.getAbsolutePath());
                             FileUtils.deleteDirectory(new File(dimFolder, "region"));
                             FileUtils.deleteDirectory(new File(dimFolder, "data"));
                             LogHelper.info("Success! Dimension Deleted!");

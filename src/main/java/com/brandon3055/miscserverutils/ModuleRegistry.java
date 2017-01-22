@@ -43,9 +43,9 @@ public class ModuleRegistry {
 
     public static void loadModuleConfig(Configuration config) {
         for (SUModuleBase module : REGISTRY.keySet()) {
-            if (REGISTRY.get(module)) {
+//            if (REGISTRY.get(module)) {
                 module.loadConfig(config);
-            }
+//            }
         }
 
         if (config.hasChanged()) {
