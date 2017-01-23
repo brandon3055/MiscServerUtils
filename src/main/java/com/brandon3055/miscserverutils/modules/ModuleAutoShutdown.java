@@ -2,6 +2,7 @@ package com.brandon3055.miscserverutils.modules;
 
 import com.brandon3055.miscserverutils.LogHelper;
 import com.brandon3055.miscserverutils.ModEventHandler;
+import com.brandon3055.miscserverutils.commands.CommandScheduleStop;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextComponentString;
@@ -23,18 +24,19 @@ import static java.time.temporal.ChronoUnit.SECONDS;
  */
 public class ModuleAutoShutdown extends SUModuleBase {
 
-    private LocalDateTime startTime;
+    public static LocalDateTime startTime;
     private LocalDateTime tpsDropTime = null;
     private int tick = 0;
 
-    public boolean enableTimedShutdown = true;
-    public int shutdownDelayMins = 60;
-    public String preShutdownMessage = "The server will be rebooting in %s";
+    public static boolean enableTimedShutdown = true;
+    public static boolean timedShutdownConfig = true;
+    public static int shutdownDelayMins = 60;
+    public static int shutdownDelayConfig = 60;
+    public static String preShutdownMessage = "The server will be rebooting in %s";
     public boolean enableTPSShutdown = true;
     public int tpsOverSeconds = 60;
     public int tpsThreshold = 10;
     public String preTPSShutdownMessage = "The server is rebooting due to low TPS";
-
 
     public ModuleAutoShutdown() {
         super("autoServerShutdown", "Will automatically shut down the server after a set uptime. On its own this may not be very useful but if combined with an auto restart script this can be used to automatically restart a server. This can also be configured to stop the server if the average tps over x amount of time drops bellow y.");
@@ -48,8 +50,10 @@ public class ModuleAutoShutdown extends SUModuleBase {
 
     @Override
     public void loadConfig(Configuration config) {
-        enableTimedShutdown = config.get("ModuleAutoShutdown", "enableTimedShutdown", enableTimedShutdown, "Enable the Auto shutdown feature.").getBoolean(enableTimedShutdown);
-        shutdownDelayMins = config.get("ModuleAutoShutdown", "shutdownDelayMins", shutdownDelayMins, "Sets how many minutes after startup the server will shutdown.").getInt(shutdownDelayMins);
+        timedShutdownConfig = config.get("ModuleAutoShutdown", "enableTimedShutdown", timedShutdownConfig, "Enable the Auto shutdown feature.").getBoolean(timedShutdownConfig);
+        enableTimedShutdown = timedShutdownConfig;
+        shutdownDelayConfig = config.get("ModuleAutoShutdown", "shutdownDelayMins", shutdownDelayConfig, "Sets how many minutes after startup the server will shutdown.").getInt(shutdownDelayConfig);
+        shutdownDelayMins = shutdownDelayConfig;
         preShutdownMessage = config.get("ModuleAutoShutdown", "preShutdownMessage", preShutdownMessage, "This is the message that will be displayed before a scheduled shutdown. %s will be replaced with the time till shutdown.").getString();
         enableTPSShutdown = config.get("ModuleAutoShutdown", "enableTPSShutdown", enableTPSShutdown, "Enables the low tps shutdown feature.").getBoolean(enableTPSShutdown);
         tpsOverSeconds = config.get("ModuleAutoShutdown", "tpsOverSeconds", tpsOverSeconds, "How many seconds to average the tps over. (Note this time is dependent on tick time)").getInt(tpsOverSeconds);
@@ -59,6 +63,7 @@ public class ModuleAutoShutdown extends SUModuleBase {
 
     @Override
     public void registerCommands(FMLServerStartingEvent event) {
+        event.registerServerCommand(new CommandScheduleStop());
         startTime = Instant.now().atZone(ZoneId.systemDefault()).toLocalDateTime();
         warningState = 0;
 
@@ -66,7 +71,7 @@ public class ModuleAutoShutdown extends SUModuleBase {
         Arrays.fill(tpsCounter, 20D);
     }
 
-    private int warningState = 0;
+    public static int warningState = 0;
     private double[] tpsCounter;
 
     @Override
@@ -90,12 +95,36 @@ public class ModuleAutoShutdown extends SUModuleBase {
                 server.getPlayerList().sendChatMsg(new TextComponentString(String.format(preShutdownMessage, "5 Minutes")).setStyle(new Style().setColor(TextFormatting.RED)));
                 warningState++;
             }
-            else if (sts < 60 && warningState == 2) {
+            else if (sts < 4 * 60 && warningState == 2) {
+                server.getPlayerList().sendChatMsg(new TextComponentString(String.format(preShutdownMessage, "4 Minutes")).setStyle(new Style().setColor(TextFormatting.RED)));
+                warningState++;
+            }
+            else if (sts < 3 * 60 && warningState == 3) {
+                server.getPlayerList().sendChatMsg(new TextComponentString(String.format(preShutdownMessage, "3 Minutes")).setStyle(new Style().setColor(TextFormatting.RED)));
+                warningState++;
+            }
+            else if (sts < 2 * 60 && warningState == 4) {
+                server.getPlayerList().sendChatMsg(new TextComponentString(String.format(preShutdownMessage, "2 Minutes")).setStyle(new Style().setColor(TextFormatting.RED)));
+                warningState++;
+            }
+            else if (sts < 60 && warningState == 5) {
                 server.getPlayerList().sendChatMsg(new TextComponentString(String.format(preShutdownMessage, "1 Minute")).setStyle(new Style().setColor(TextFormatting.RED)));
                 warningState++;
             }
-            else if (sts < 20 && warningState == 3) {
+            else if (sts < 20 && warningState == 6) {
                 server.getPlayerList().sendChatMsg(new TextComponentString(String.format(preShutdownMessage, "20 Seconds")).setStyle(new Style().setColor(TextFormatting.RED)));
+                warningState++;
+            }
+            else if (sts < 4 && warningState == 7) {
+                server.getPlayerList().sendChatMsg(new TextComponentString(String.format(preShutdownMessage, "3 Seconds")).setStyle(new Style().setColor(TextFormatting.RED)));
+                warningState++;
+            }
+            else if (sts < 3 && warningState == 8) {
+                server.getPlayerList().sendChatMsg(new TextComponentString(String.format(preShutdownMessage, "2 Seconds")).setStyle(new Style().setColor(TextFormatting.RED)));
+                warningState++;
+            }
+            else if (sts < 2 && warningState == 9) {
+                server.getPlayerList().sendChatMsg(new TextComponentString(String.format(preShutdownMessage, "1 Second")).setStyle(new Style().setColor(TextFormatting.RED)));
                 warningState++;
             }
 
@@ -129,7 +158,7 @@ public class ModuleAutoShutdown extends SUModuleBase {
             tpsCounter[secondIndex] = tps;
 
             double meanTPS = getTPSCount();
-            LogHelper.info(meanTPS + " " + tpsCounter.length+" "+tpsOverSeconds);
+
             if (meanTPS < tpsThreshold && tpsDropTime == null) {
                 tpsDropTime = Instant.now().atZone(ZoneId.systemDefault()).toLocalDateTime();
             }
