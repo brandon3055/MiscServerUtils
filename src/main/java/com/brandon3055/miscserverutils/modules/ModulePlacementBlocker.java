@@ -78,14 +78,13 @@ public class ModulePlacementBlocker extends SUModuleBase {
                     }
 
                     entry = entry.substring(entry.indexOf("|") + 1);
-                    LogHelper.info("A: " + entry);
                     boolean whitelist = Boolean.parseBoolean(entry.substring(0, entry.indexOf("|")));
-                    LogHelper.info("whitelist: " + entry.substring(0, entry.indexOf("|")));
                     entry = entry.substring(entry.indexOf("|") + 1);
-                    LogHelper.info("B: " + entry);
                     String[] dims = entry.split(",");
                     List<Integer> dimList = new ArrayList<>();
-                    for (String dim : dims) dimList.add(Integer.parseInt(dim));
+                    for (String dim : dims) {
+                        if (dim.length() > 0) dimList.add(Integer.parseInt(dim));
+                    }
                     xyPlacementRestrictions.add(new BlockInDimension(stack,placementBlockedMessage, dimList, whitelist));
                 }
                 catch (Exception e) {
