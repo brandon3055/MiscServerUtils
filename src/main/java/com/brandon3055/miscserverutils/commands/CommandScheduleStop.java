@@ -21,12 +21,12 @@ import java.util.List;
 public class CommandScheduleStop extends CommandBase {
 
     @Override
-    public String getCommandName() {
+    public String getName() {
         return "ms_stop";
     }
 
     @Override
-    public String getCommandUsage(ICommandSender sender) {
+    public String getUsage(ICommandSender sender) {
         return "/ms_stop [Minutes - Default: 5]\n/ms_stop cancel (Cancel a scheduled stop)\n/ms_stop reset (Reset the scheduled stop)";
     }
 
@@ -36,29 +36,29 @@ public class CommandScheduleStop extends CommandBase {
             ModuleAutoShutdown.enableTimedShutdown = true;
             ModuleAutoShutdown.shutdownDelayMins = 5;
             ModuleAutoShutdown.startTime = Instant.now().atZone(ZoneId.systemDefault()).toLocalDateTime();
-            sender.addChatMessage(new TextComponentString(String.format(ModuleAutoShutdown.preShutdownMessage, "5 Minutes")).setStyle(new Style().setColor(TextFormatting.RED)));
+            sender.sendMessage(new TextComponentString(String.format(ModuleAutoShutdown.preShutdownMessage, "5 Minutes")).setStyle(new Style().setColor(TextFormatting.RED)));
         }
         else if (args.length == 1 && args[0].equals("cancel")) {
             ModuleAutoShutdown.enableTimedShutdown = false;
-            sender.addChatMessage(new TextComponentString("Auto shutdown canceled."));
+            sender.sendMessage(new TextComponentString("Auto shutdown canceled."));
         }
         else if (args.length == 1 && args[0].equals("reset")) {
             ModuleAutoShutdown.enableTimedShutdown = ModuleAutoShutdown.timedShutdownConfig;
             ModuleAutoShutdown.shutdownDelayMins = ModuleAutoShutdown.shutdownDelayConfig;
             ModuleAutoShutdown.startTime = Instant.now().atZone(ZoneId.systemDefault()).toLocalDateTime();
             ModuleAutoShutdown.warningState = 0;
-            sender.addChatMessage(new TextComponentString("Auto shutdown reset."));
+            sender.sendMessage(new TextComponentString("Auto shutdown reset."));
         }
         else if (args.length == 1) {
             ModuleAutoShutdown.enableTimedShutdown = true;
             ModuleAutoShutdown.shutdownDelayMins = parseInt(args[0]);
             ModuleAutoShutdown.startTime = Instant.now().atZone(ZoneId.systemDefault()).toLocalDateTime();
-            sender.addChatMessage(new TextComponentString(String.format(ModuleAutoShutdown.preShutdownMessage, ModuleAutoShutdown.shutdownDelayMins + " Minute" + (ModuleAutoShutdown.shutdownDelayMins > 1 ? "s" : ""))).setStyle(new Style().setColor(TextFormatting.RED)));
+            sender.sendMessage(new TextComponentString(String.format(ModuleAutoShutdown.preShutdownMessage, ModuleAutoShutdown.shutdownDelayMins + " Minute" + (ModuleAutoShutdown.shutdownDelayMins > 1 ? "s" : ""))).setStyle(new Style().setColor(TextFormatting.RED)));
         }
     }
 
     @Override
-    public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos) {
+    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos) {
         return getListOfStringsMatchingLastWord(args, "cancel", "reset");
     }
 }

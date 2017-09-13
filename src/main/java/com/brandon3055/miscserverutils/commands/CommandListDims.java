@@ -24,19 +24,19 @@ public class CommandListDims extends CommandBase {
     }
 
     @Override
-    public String getCommandName() {
+    public String getName() {
         return "list_dimensions";
     }
 
     @Override
-    public String getCommandUsage(ICommandSender sender) {
+    public String getUsage(ICommandSender sender) {
         return "/list_dimensions";
     }
 
     @Override
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
-        sender.addChatMessage(new TextComponentString("================ Dimension List ================").setStyle(new Style().setColor(TextFormatting.AQUA)));
-        sender.addChatMessage(new TextComponentString("dim-ID | name").setStyle(new Style().setColor(DARK_PURPLE)));
+        sender.sendMessage(new TextComponentString("================ Dimension List ================").setStyle(new Style().setColor(TextFormatting.AQUA)));
+        sender.sendMessage(new TextComponentString("dim-ID | name").setStyle(new Style().setColor(DARK_PURPLE)));
 
         for (WorldServer worldServer : DimensionManager.getWorlds()) {
             String id = worldServer.provider.getDimension() + "";
@@ -44,7 +44,7 @@ public class CommandListDims extends CommandBase {
                 id += " ";
             }
 
-            sender.addChatMessage(new TextComponentString(id + WHITE + " | " + GOLD + worldServer.provider.getDimensionType()).setStyle(new Style().setColor(GOLD)));
+            sender.sendMessage(new TextComponentString(id + WHITE + " | " + GOLD + worldServer.provider.getDimensionType()).setStyle(new Style().setColor(GOLD)));
         }
     }
 }

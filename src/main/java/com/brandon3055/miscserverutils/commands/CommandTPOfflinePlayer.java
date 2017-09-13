@@ -27,12 +27,12 @@ import java.util.zip.GZIPOutputStream;
  */
 public class CommandTPOfflinePlayer extends CommandBase {
     @Override
-    public String getCommandName() {
+    public String getName() {
         return "tpofflineplayer";
     }
 
     @Override
-    public String getCommandUsage(ICommandSender p_71518_1_) {
+    public String getUsage(ICommandSender p_71518_1_) {
         return "/tpofflineplayer [target player] <destination player> OR /tpofflineplayer [target player] <x> <y> <z> [dimension]";
     }
 
@@ -101,8 +101,8 @@ public class CommandTPOfflinePlayer extends CommandBase {
 //            tpOfflinePlayer(server, args[0], x, y, z, false, 0)
         }
         else {
-            sender.addChatMessage(new TextComponentString("Usage: /tpofflineplayer [target player] <destination player> OR tpofflineplayer [target player] <x> <y> <z> [dimension]"));
-            sender.addChatMessage(new TextComponentString("-Works the same as the vanilla tp command except has support for offline players and international teleportation.").setStyle(new Style().setColor(TextFormatting.GRAY)));
+            sender.sendMessage(new TextComponentString("Usage: /tpofflineplayer [target player] <destination player> OR tpofflineplayer [target player] <x> <y> <z> [dimension]"));
+            sender.sendMessage(new TextComponentString("-Works the same as the vanilla tp command except has support for offline players and international teleportation.").setStyle(new Style().setColor(TextFormatting.GRAY)));
         }
     }
 
@@ -145,7 +145,7 @@ public class CommandTPOfflinePlayer extends CommandBase {
         }
 
         if (playerFile == null) {
-            throw new PlayerNotFoundException();
+            throw new PlayerNotFoundException(username);
         }
 
         return playerFile;

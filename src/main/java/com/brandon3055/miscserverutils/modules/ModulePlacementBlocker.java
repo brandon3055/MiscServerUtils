@@ -112,7 +112,7 @@ public class ModulePlacementBlocker extends SUModuleBase {
             for (BlockRestriction restriction : xyPlacementRestrictions) {
                 if (!restriction.doCheck(event.getWorld(), pos, stack)) {
                     event.setCanceled(true);
-                    ((BlockEvent.PlaceEvent) event).getPlayer().addChatComponentMessage(new TextComponentString(restriction.getMessage()));
+                    ((BlockEvent.PlaceEvent) event).getPlayer().sendMessage(new TextComponentString(restriction.getMessage()));
                     return;
                 }
             }
@@ -171,7 +171,7 @@ public class ModulePlacementBlocker extends SUModuleBase {
 
             if (item1.getItem() instanceof ItemBlock) {
                 //If item 1 == the block
-                if (((ItemBlock) item1.getItem()).block == state.getBlock() && (stack1.metadata == -1 || stack1.metadata == state.getBlock().getMetaFromState(state))) {
+                if (((ItemBlock) item1.getItem()).getBlock() == state.getBlock() && (stack1.metadata == -1 || stack1.metadata == state.getBlock().getMetaFromState(state))) {
                     //And item 2 == the Stack
                     if (item2.getItem() == stack.getItem() && (stack2.metadata == -1 || stack2.metadata == stack.getItemDamage())) {
                         return false;
@@ -182,7 +182,7 @@ public class ModulePlacementBlocker extends SUModuleBase {
 
             if (item2.getItem() instanceof ItemBlock) {
                 //If item 2 == the block
-                if (((ItemBlock) item2.getItem()).block == state.getBlock() && (stack2.metadata == -1 || stack2.metadata == state.getBlock().getMetaFromState(state))) {
+                if (((ItemBlock) item2.getItem()).getBlock() == state.getBlock() && (stack2.metadata == -1 || stack2.metadata == state.getBlock().getMetaFromState(state))) {
                     //And item 1 == the Stack
                     if (item1.getItem() == stack.getItem() && (stack1.metadata == -1 || stack1.metadata == stack.getItemDamage())) {
                         return false;
@@ -215,7 +215,7 @@ public class ModulePlacementBlocker extends SUModuleBase {
 
             if (item.getItem() instanceof ItemBlock) {
                 //If item 1 == the block
-                if (((ItemBlock) item.getItem()).block == state.getBlock() && (this.stack.metadata == -1 || this.stack.metadata == state.getBlock().getMetaFromState(state))) {
+                if (((ItemBlock) item.getItem()).getBlock() == state.getBlock() && (this.stack.metadata == -1 || this.stack.metadata == state.getBlock().getMetaFromState(state))) {
                     LogHelper.info(whitelist);
                     if (whitelist) {
                         return dimensions.contains(dim);

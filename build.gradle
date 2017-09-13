@@ -7,7 +7,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:2.2-SNAPSHOT'
+        classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
     }
 }
 apply plugin: 'net.minecraftforge.gradle.forge'
@@ -112,7 +112,7 @@ uploadArchives {
                     project {
                         name project.archivesBaseName
                         packaging 'jar'
-                        description 'SSFMiscServerUtils'
+                        description 'MiscServerUtils'
                         url 'https://github.com/brandon3055/MiscServerUtils'
                         scm {
                             url 'https://github.com/brandon3055/MiscServerUtils'

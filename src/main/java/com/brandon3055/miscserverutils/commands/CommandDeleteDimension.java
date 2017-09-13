@@ -21,12 +21,12 @@ import java.util.List;
 public class CommandDeleteDimension extends CommandBase {
 
     @Override
-    public String getCommandName() {
+    public String getName() {
         return "deldimension";
     }
 
     @Override
-    public String getCommandUsage(ICommandSender sender) {
+    public String getUsage(ICommandSender sender) {
         return "/deldimension";
     }
 
@@ -37,7 +37,7 @@ public class CommandDeleteDimension extends CommandBase {
         //region DelNow
         if (arg(args, 0, "delnow") && args.length > 1) {
             int dim = parseInt(args[1]);
-            WorldServer world = server.worldServerForDimension(dim);
+            WorldServer world = server.getWorld(dim);
             if (world == null) {
                 throw new CommandException("Dimension " + dim + " Not Found!");
             }
@@ -49,11 +49,11 @@ public class CommandDeleteDimension extends CommandBase {
 
             if (arg(args, 2, "confirm")) {
                 ModuleDeleteScheduler.addImmediateDeletion(dim);
-                sender.addChatMessage(new TextComponentString("Dimension \"" + name + "\" Will now be deleted!").setStyle(new Style().setColor(TextFormatting.RED)));
+                sender.sendMessage(new TextComponentString("Dimension \"" + name + "\" Will now be deleted!").setStyle(new Style().setColor(TextFormatting.RED)));
                 return;
             }
             else {
-                sender.addChatMessage(new TextComponentString("Are you sure you want to delete dimension \"" + name + "\"? If so add \"confirm\" to the end of the command you just ran.").setStyle(new Style().setColor(TextFormatting.RED)));
+                sender.sendMessage(new TextComponentString("Are you sure you want to delete dimension \"" + name + "\"? If so add \"confirm\" to the end of the command you just ran.").setStyle(new Style().setColor(TextFormatting.RED)));
                 return;
             }
         }
@@ -72,7 +72,7 @@ public class CommandDeleteDimension extends CommandBase {
             }
 
             ModuleDeleteScheduler.addSchedule(dim, minute, hour, day, month, repeat);
-            sender.addChatMessage(new TextComponentString("Schedule Created!").setStyle(new Style().setColor(TextFormatting.GREEN)));
+            sender.sendMessage(new TextComponentString("Schedule Created!").setStyle(new Style().setColor(TextFormatting.GREEN)));
         }
         //endregion
 
@@ -80,18 +80,18 @@ public class CommandDeleteDimension extends CommandBase {
         else if (arg(args, 0, "reload")) {
             boolean failSafe = ModuleDeleteScheduler.ohCrapTriggered;
             ModuleDeleteScheduler.reload();
-            sender.addChatMessage(new TextComponentString("Deletion Schedule reloaded from disk!").setStyle(new Style().setColor(TextFormatting.GREEN)));
+            sender.sendMessage(new TextComponentString("Deletion Schedule reloaded from disk!").setStyle(new Style().setColor(TextFormatting.GREEN)));
             if (failSafe) {
-                sender.addChatMessage(new TextComponentString("Fail safe mode deactivated! Deletion scheduler is now active!").setStyle(new Style().setColor(TextFormatting.RED)));
+                sender.sendMessage(new TextComponentString("Fail safe mode deactivated! Deletion scheduler is now active!").setStyle(new Style().setColor(TextFormatting.RED)));
             }
         }
         //endregion
 
         //region List
         else if (arg(args, 0, "list")) {
-            sender.addChatMessage(new TextComponentString("Active Schedules:").setStyle(new Style().setColor(TextFormatting.GREEN)));
+            sender.sendMessage(new TextComponentString("Active Schedules:").setStyle(new Style().setColor(TextFormatting.GREEN)));
             for (DeletionSchedule schedule : ModuleDeleteScheduler.getDeletionSchedules()) {
-                sender.addChatMessage(new TextComponentString(schedule.toString()).setStyle(new Style().setColor(TextFormatting.GOLD)));
+                sender.sendMessage(new TextComponentString(schedule.toString()).setStyle(new Style().setColor(TextFormatting.GOLD)));
             }
         }
         //endregion
@@ -100,10 +100,10 @@ public class CommandDeleteDimension extends CommandBase {
         else if (arg(args, 0, "unschedule") && args.length == 2) {
             int id = parseInt(args[1]);
             if (ModuleDeleteScheduler.removeSchedule(id)) {
-                sender.addChatMessage(new TextComponentString("Success").setStyle(new Style().setColor(TextFormatting.GREEN)));
+                sender.sendMessage(new TextComponentString("Success").setStyle(new Style().setColor(TextFormatting.GREEN)));
             }
             else {
-                sender.addChatMessage(new TextComponentString("Error! Did not find a schedule with that id! Use /" + getCommandName() + " list to get a list of all active schedules and their id's").setStyle(new Style().setColor(TextFormatting.RED)));
+                sender.sendMessage(new TextComponentString("Error! Did not find a schedule with that id! Use /" + getName() + " list to get a list of all active schedules and their id's").setStyle(new Style().setColor(TextFormatting.RED)));
             }
         }
         //endregion
@@ -111,7 +111,7 @@ public class CommandDeleteDimension extends CommandBase {
         //region Stop
         else if (arg(args, 0, "stop")) {
             ModuleDeleteScheduler.stopEverything();
-            sender.addChatMessage(new TextComponentString("Fail safe mode activated! Deletion scheduler is now inactive! use \"/" + getCommandName() + " reload\" or restart the game to restore normal operation.").setStyle(new Style().setColor(TextFormatting.RED)));
+            sender.sendMessage(new TextComponentString("Fail safe mode activated! Deletion scheduler is now inactive! use \"/" + getName() + " reload\" or restart the game to restore normal operation.").setStyle(new Style().setColor(TextFormatting.RED)));
         }
         //endregion
 
@@ -121,20 +121,20 @@ public class CommandDeleteDimension extends CommandBase {
     }
 
     private void help(ICommandSender sender) {
-        sender.addChatMessage(new TextComponentString("/deldimension delnow <dimension>").setStyle(new Style().setColor(TextFormatting.GOLD)));
-        sender.addChatMessage(new TextComponentString("/deldimension schedule <dimension> <month or *> <day of month or *> <hour of day or *> <minute of hour> [-r]").setStyle(new Style().setColor(TextFormatting.GOLD)));
-        sender.addChatMessage(new TextComponentString("Adding -r will make this a repeat event."));
-        sender.addChatMessage(new TextComponentString("/deldimension reload").setStyle(new Style().setColor(TextFormatting.GOLD)));
-        sender.addChatMessage(new TextComponentString("/deldimension list").setStyle(new Style().setColor(TextFormatting.GOLD)));
-        sender.addChatMessage(new TextComponentString("Lists all active deletion schedules."));
-        sender.addChatMessage(new TextComponentString("/deldimension unschedule <schedule id>").setStyle(new Style().setColor(TextFormatting.GOLD)));
-        sender.addChatMessage(new TextComponentString("Removes a deletion schedule. Use /deldimension list to get the schedule id."));
-        sender.addChatMessage(new TextComponentString("/deldimension stop").setStyle(new Style().setColor(TextFormatting.GOLD)));
-        sender.addChatMessage(new TextComponentString("This is an \"Oh Crap\" command that stops all active schedules. Run the reload command to restore normal operation."));
+        sender.sendMessage(new TextComponentString("/deldimension delnow <dimension>").setStyle(new Style().setColor(TextFormatting.GOLD)));
+        sender.sendMessage(new TextComponentString("/deldimension schedule <dimension> <month or *> <day of month or *> <hour of day or *> <minute of hour> [-r]").setStyle(new Style().setColor(TextFormatting.GOLD)));
+        sender.sendMessage(new TextComponentString("Adding -r will make this a repeat event."));
+        sender.sendMessage(new TextComponentString("/deldimension reload").setStyle(new Style().setColor(TextFormatting.GOLD)));
+        sender.sendMessage(new TextComponentString("/deldimension list").setStyle(new Style().setColor(TextFormatting.GOLD)));
+        sender.sendMessage(new TextComponentString("Lists all active deletion schedules."));
+        sender.sendMessage(new TextComponentString("/deldimension unschedule <schedule id>").setStyle(new Style().setColor(TextFormatting.GOLD)));
+        sender.sendMessage(new TextComponentString("Removes a deletion schedule. Use /deldimension list to get the schedule id."));
+        sender.sendMessage(new TextComponentString("/deldimension stop").setStyle(new Style().setColor(TextFormatting.GOLD)));
+        sender.sendMessage(new TextComponentString("This is an \"Oh Crap\" command that stops all active schedules. Run the reload command to restore normal operation."));
     }
 
     @Override
-    public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos) {
+    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos) {
         return getListOfStringsMatchingLastWord(args, "delnow", "schedule", "reload", "list", "unschedule", "stop");
     }
 

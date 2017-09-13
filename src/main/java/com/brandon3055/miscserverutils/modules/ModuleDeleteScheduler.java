@@ -115,11 +115,11 @@ public class ModuleDeleteScheduler extends SUModuleBase {
             if (time < 5) {
                 event.setCanceled(true);
                 if (event.getEntity() instanceof EntityPlayer) {
-                    ((EntityPlayer) event.getEntity()).addChatComponentMessage(new TextComponentString("The dimension you are attempting to travel to is about to be deleted/reset. Please wait a few seconds then try again.").setStyle(new Style().setColor(TextFormatting.RED)));
+                    ((EntityPlayer) event.getEntity()).sendMessage(new TextComponentString("The dimension you are attempting to travel to is about to be deleted/reset. Please wait a few seconds then try again.").setStyle(new Style().setColor(TextFormatting.RED)));
                 }
             }
             else if (event.getEntity() instanceof EntityPlayer) {
-                ((EntityPlayer) event.getEntity()).addChatComponentMessage(new TextComponentString("Warning! This dimension will be deleted/reset in " + (Math.round((time / 60D) * 10D) / 10D) + " minutes! (" + time + " seconds)").setStyle(new Style().setColor(TextFormatting.RED)));
+                ((EntityPlayer) event.getEntity()).sendMessage(new TextComponentString("Warning! This dimension will be deleted/reset in " + (Math.round((time / 60D) * 10D) / 10D) + " minutes! (" + time + " seconds)").setStyle(new Style().setColor(TextFormatting.RED)));
             }
         }
     }
@@ -242,14 +242,14 @@ public class ModuleDeleteScheduler extends SUModuleBase {
 
     public static void clearDimension(/*MinecraftServer server, */WorldServer world/*, BlockPos spawn*/) {
         MinecraftServer server = world.getMinecraftServer();
-        BlockPos spawn = server.worldServerForDimension(0).getSpawnPoint();
+        BlockPos spawn = server.getWorld(0).getSpawnPoint();
         List<EntityPlayer> players = new ArrayList<EntityPlayer>(world.playerEntities);
         int dim = world.provider.getDimension();
         int playersMoved = 0;
 
         for (EntityPlayer player : players) {
             TeleportUtils.teleportEntity(player, 0, spawn.getX() + 0.5, spawn.getY() + 0.5, spawn.getZ() + 0.5);
-            player.addChatComponentMessage(new TextComponentString("You were moved because the dimension you were in is being deleted/reset.").setStyle(new Style().setColor(TextFormatting.RED)));
+            player.sendMessage(new TextComponentString("You were moved because the dimension you were in is being deleted/reset.").setStyle(new Style().setColor(TextFormatting.RED)));
             playersMoved++;
         }
         server.getPlayerList().saveAllPlayerData();
@@ -305,9 +305,9 @@ public class ModuleDeleteScheduler extends SUModuleBase {
         TextComponentString text = new TextComponentString(TextFormatting.RED + "[" + TextFormatting.BLUE + "Misc Server Utils" + TextFormatting.RED + "]" + TextFormatting.GREEN + ": ");
         text.appendSibling(new TextComponentString(message).setStyle(new Style().setColor(TextFormatting.GREEN)));
 
-        for (EntityPlayerMP player : server.getPlayerList().getPlayerList()) {
-            if (server.getPlayerList().canSendCommands(player.getGameProfile()) && player.canCommandSenderUseCommand(COMMAND_INSTANCE.getRequiredPermissionLevel(), COMMAND_INSTANCE.getCommandName())) {
-                player.addChatMessage(text);
+        for (EntityPlayerMP player : server.getPlayerList().getPlayers()) {
+            if (server.getPlayerList().canSendCommands(player.getGameProfile()) && player.canUseCommand(COMMAND_INSTANCE.getRequiredPermissionLevel(), COMMAND_INSTANCE.getName())) {
+                player.sendMessage(text);
             }
         }
     }
@@ -378,7 +378,7 @@ public class ModuleDeleteScheduler extends SUModuleBase {
 
             if (timeTillDeletion <= 0) {
                 if (timer == -1) {
-                    WorldServer world = server.worldServerForDimension(scheduledBy.dimension);
+                    WorldServer world = server.getWorld(scheduledBy.dimension);
                     if (world == null) {
                         LogHelper.error("Can not delete dimension " + scheduledBy.dimension + " because the dimension dose not exist!");
                         messageAdmins("Can not delete dimension " + scheduledBy.dimension + " because the dimension dose not exist!");
@@ -399,7 +399,7 @@ public class ModuleDeleteScheduler extends SUModuleBase {
                 }
                 else {
                     if (timer == 4) {
-                        WorldServer world = server.worldServerForDimension(scheduledBy.dimension);
+                        WorldServer world = server.getWorld(scheduledBy.dimension);
                         if (world == null) {
                             LogHelper.error("Can not delete dimension " + scheduledBy.dimension + " because the dimension dose not exist!");
                             dimHandlerMap.remove(scheduledBy.dimension);

@@ -90,7 +90,7 @@ public class ModEventHandler {
 
     @SubscribeEvent
     public void onEvent(TickEvent.PlayerTickEvent event) {
-        if (event.player.worldObj.isRemote) {
+        if (event.player.world.isRemote) {
             return;
         }
         for (SUModuleBase module : eventListeners.get(EventType.PLAYER_TICK)) {
@@ -100,7 +100,7 @@ public class ModEventHandler {
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void onEventLast(TickEvent.PlayerTickEvent event) {
-        if (event.player.worldObj.isRemote) {
+        if (event.player.world.isRemote) {
             return;
         }
         for (SUModuleBase module : eventListeners.get(EventType.PLAYER_TICK_LAST)) {

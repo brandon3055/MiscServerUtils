@@ -88,43 +88,43 @@ public class ModuleAutoShutdown extends SUModuleBase {
             long sts = (shutdownDelayMins * 60) - startTime.until(now, SECONDS);
 
             if (sts < 10 * 60 && warningState == 0) {
-                server.getPlayerList().sendChatMsg(new TextComponentString(String.format(preShutdownMessage, "10 Minutes")).setStyle(new Style().setColor(TextFormatting.RED)));
+                server.getPlayerList().sendMessage(new TextComponentString(String.format(preShutdownMessage, "10 Minutes")).setStyle(new Style().setColor(TextFormatting.RED)));
                 warningState++;
             }
             else if (sts < 5 * 60 && warningState == 1) {
-                server.getPlayerList().sendChatMsg(new TextComponentString(String.format(preShutdownMessage, "5 Minutes")).setStyle(new Style().setColor(TextFormatting.RED)));
+                server.getPlayerList().sendMessage(new TextComponentString(String.format(preShutdownMessage, "5 Minutes")).setStyle(new Style().setColor(TextFormatting.RED)));
                 warningState++;
             }
             else if (sts < 4 * 60 && warningState == 2) {
-                server.getPlayerList().sendChatMsg(new TextComponentString(String.format(preShutdownMessage, "4 Minutes")).setStyle(new Style().setColor(TextFormatting.RED)));
+                server.getPlayerList().sendMessage(new TextComponentString(String.format(preShutdownMessage, "4 Minutes")).setStyle(new Style().setColor(TextFormatting.RED)));
                 warningState++;
             }
             else if (sts < 3 * 60 && warningState == 3) {
-                server.getPlayerList().sendChatMsg(new TextComponentString(String.format(preShutdownMessage, "3 Minutes")).setStyle(new Style().setColor(TextFormatting.RED)));
+                server.getPlayerList().sendMessage(new TextComponentString(String.format(preShutdownMessage, "3 Minutes")).setStyle(new Style().setColor(TextFormatting.RED)));
                 warningState++;
             }
             else if (sts < 2 * 60 && warningState == 4) {
-                server.getPlayerList().sendChatMsg(new TextComponentString(String.format(preShutdownMessage, "2 Minutes")).setStyle(new Style().setColor(TextFormatting.RED)));
+                server.getPlayerList().sendMessage(new TextComponentString(String.format(preShutdownMessage, "2 Minutes")).setStyle(new Style().setColor(TextFormatting.RED)));
                 warningState++;
             }
             else if (sts < 60 && warningState == 5) {
-                server.getPlayerList().sendChatMsg(new TextComponentString(String.format(preShutdownMessage, "1 Minute")).setStyle(new Style().setColor(TextFormatting.RED)));
+                server.getPlayerList().sendMessage(new TextComponentString(String.format(preShutdownMessage, "1 Minute")).setStyle(new Style().setColor(TextFormatting.RED)));
                 warningState++;
             }
             else if (sts < 20 && warningState == 6) {
-                server.getPlayerList().sendChatMsg(new TextComponentString(String.format(preShutdownMessage, "20 Seconds")).setStyle(new Style().setColor(TextFormatting.RED)));
+                server.getPlayerList().sendMessage(new TextComponentString(String.format(preShutdownMessage, "20 Seconds")).setStyle(new Style().setColor(TextFormatting.RED)));
                 warningState++;
             }
             else if (sts < 4 && warningState == 7) {
-                server.getPlayerList().sendChatMsg(new TextComponentString(String.format(preShutdownMessage, "3 Seconds")).setStyle(new Style().setColor(TextFormatting.RED)));
+                server.getPlayerList().sendMessage(new TextComponentString(String.format(preShutdownMessage, "3 Seconds")).setStyle(new Style().setColor(TextFormatting.RED)));
                 warningState++;
             }
             else if (sts < 3 && warningState == 8) {
-                server.getPlayerList().sendChatMsg(new TextComponentString(String.format(preShutdownMessage, "2 Seconds")).setStyle(new Style().setColor(TextFormatting.RED)));
+                server.getPlayerList().sendMessage(new TextComponentString(String.format(preShutdownMessage, "2 Seconds")).setStyle(new Style().setColor(TextFormatting.RED)));
                 warningState++;
             }
             else if (sts < 2 && warningState == 9) {
-                server.getPlayerList().sendChatMsg(new TextComponentString(String.format(preShutdownMessage, "1 Second")).setStyle(new Style().setColor(TextFormatting.RED)));
+                server.getPlayerList().sendMessage(new TextComponentString(String.format(preShutdownMessage, "1 Second")).setStyle(new Style().setColor(TextFormatting.RED)));
                 warningState++;
             }
 
@@ -170,7 +170,7 @@ public class ModuleAutoShutdown extends SUModuleBase {
                 LocalDateTime now = Instant.now().atZone(ZoneId.systemDefault()).toLocalDateTime();
                 long sts = (tpsOverSeconds) - tpsDropTime.until(now, SECONDS);
                 if (sts <= 0) {
-                    server.getPlayerList().sendChatMsg(new TextComponentString(preTPSShutdownMessage).setStyle(new Style().setColor(TextFormatting.RED)));
+                    server.getPlayerList().sendMessage(new TextComponentString(preTPSShutdownMessage).setStyle(new Style().setColor(TextFormatting.RED)));
                     server.initiateShutdown();
                 }
             }

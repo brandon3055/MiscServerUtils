@@ -1,6 +1,8 @@
 package com.brandon3055.miscserverutils;
 
 import com.google.common.base.Objects;
+import net.minecraft.block.Block;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.JsonToNBT;
@@ -15,14 +17,17 @@ public class StackReference {
 
     private ResourceLocation stack;
     public int metadata = 0;
-    protected int stackSize = 0;
-    protected NBTTagCompound nbt = null;
+    public int stackSize = 0;
+    public NBTTagCompound nbt = null;
 
     public StackReference(String stackRegName, int stackSize, int metadata, NBTTagCompound nbt) {
         this.stack = new ResourceLocation(stackRegName);
         this.metadata = metadata;
         this.stackSize = stackSize;
         this.nbt = nbt;
+        if (stackSize <= 0) {
+            this.stackSize = 1;
+        }
     }
 
     public StackReference(String stackRegName, int stackSize, int metadata) {
@@ -34,11 +39,11 @@ public class StackReference {
     }
 
     public StackReference(String stackRegName) {
-        this(stackRegName, 0);
+        this(stackRegName, 1);
     }
 
     public StackReference(ItemStack stack) {
-        this(stack.getItem().getRegistryName().toString(), stack.stackSize, stack.getItemDamage(), stack.getTagCompound());
+        this(stack.getItem().getRegistryName().toString(), stack.getCount(), stack.getItemDamage(), stack.getTagCompound());
     }
 
     private StackReference() {
@@ -51,11 +56,19 @@ public class StackReference {
 
     public ItemStack createStack() {
         Item item = Item.REGISTRY.getObject(stack);
-        if (item == null) {
-            return null;
+        Block block = Block.REGISTRY.getObject(stack);
+        if (item == null && block == Blocks.AIR) {
+            return ItemStack.EMPTY;
         }
         else {
-            ItemStack itemStack = new ItemStack(item, stackSize, metadata);
+            ItemStack itemStack;
+            if (item != null) {
+                itemStack = new ItemStack(item, stackSize, metadata);
+            }
+            else {
+                itemStack = new ItemStack(block, stackSize, metadata);
+            }
+
             if (nbt != null) {
                 itemStack.setTagCompound(nbt.copy());
             }
