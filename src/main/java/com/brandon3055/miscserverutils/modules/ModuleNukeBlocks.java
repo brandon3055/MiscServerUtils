@@ -17,7 +17,9 @@ import net.minecraftforge.event.world.ChunkDataEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -30,6 +32,7 @@ public class ModuleNukeBlocks extends SUModuleBase {
     private IBlockState replacement = Blocks.STONE.getDefaultState();
     private String marker = "msu-nuked";
     private boolean log = true;
+    private boolean clearCoFH = false;
     private Set<IBlockState> targets = new HashSet<>();
 
     public ModuleNukeBlocks() {
@@ -54,6 +57,7 @@ public class ModuleNukeBlocks extends SUModuleBase {
             replacementName = config.getString("Replacement", "ModuleNukeBlocks", "minecraft:stone", "the block that should be used as a replacement for the removed blocks.");
             marker = config.getString("ChunkMarker", "ModuleNukeBlocks", marker, "This marker is used to flag chunks that have already been nuked. If you need to remove new blocks from previously processed chunks then change this to some new unique string.");
             log = config.getBoolean("LogReplaceEvents", "ModuleNukeBlocks", log, "");
+            clearCoFH = config.getBoolean("ResetCoFHGenTag", "ModuleNukeBlocks", clearCoFH, "");
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -113,14 +117,21 @@ public class ModuleNukeBlocks extends SUModuleBase {
         BlockPos origin = chunk.getPos().getBlock(0, 0, 0);
         Iterable<BlockPos> blocks = BlockPos.getAllInBox(origin, origin.add(15, 255, 15));
 
+        Map<IBlockState, Integer> purged = new HashMap<>();
+
         for (BlockPos pos : blocks) {
             IBlockState state = chunk.getBlockState(pos);
             if (targets.contains(state)) {
                 chunk.setBlockState(pos, replacement);
                 if (log) {
-                    LogHelper.info("Chunk: " + chunk.getPos() + " Replaced: " + state + " At: " + pos);
+                    purged.put(state, purged.getOrDefault(state, 0) + 1);
                 }
             }
+        }
+
+        if (log && !purged.isEmpty()) {
+            LogHelper.info("Purged chunk: " + chunk.getPos()+" Removed the following");
+            purged.forEach((iBlockState, integer) -> LogHelper.info(" - " + iBlockState+ " x " + integer));
         }
     }
 
