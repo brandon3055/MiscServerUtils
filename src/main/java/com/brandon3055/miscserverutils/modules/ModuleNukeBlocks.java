@@ -90,6 +90,7 @@ public class ModuleNukeBlocks extends SUModuleBase {
 
         tag.setBoolean(marker, true);
         event.getData().setTag(DATA_TAG, tag);
+        event.getChunk().markDirty();
 
         Chunk chunk = event.getChunk();
 
