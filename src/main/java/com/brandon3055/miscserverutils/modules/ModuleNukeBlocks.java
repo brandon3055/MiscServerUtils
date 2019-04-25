@@ -56,11 +56,6 @@ public class ModuleNukeBlocks extends SUModuleBase {
         catch (Exception e) {
             e.printStackTrace();
         }
-
-        LogHelper.info("Loaded the following Blocks to be nuked");
-        for (IBlockState block : targets) {
-            LogHelper.info(block);
-        }
     }
 
     @Override
@@ -78,6 +73,11 @@ public class ModuleNukeBlocks extends SUModuleBase {
         }
 
         replacement = Block.REGISTRY.getObject(new ResourceLocation(replacementName)).getDefaultState();
+
+        LogHelper.info("Loaded the following Blocks to be nuked");
+        for (IBlockState block : targets) {
+            LogHelper.info(block);
+        }
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
