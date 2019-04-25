@@ -60,4 +60,12 @@ public class ModuleRegistry {
             }
         }
     }
+
+    public static void init() {
+        for (SUModuleBase module : REGISTRY.keySet()) {
+            if (REGISTRY.get(module)) {
+                module.fmlLoadEvent();
+            }
+        }
+    }
 }

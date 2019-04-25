@@ -62,4 +62,10 @@ public abstract class SUModuleBase {
     public void onEvent(BlockEvent event) {
 
     }
+
+    public void fmlLoadEvent() {
+
+    }
+
+//    public abstract void fmlLoadEvent();
 }

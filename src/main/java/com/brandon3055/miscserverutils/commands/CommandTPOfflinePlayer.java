@@ -159,17 +159,11 @@ public class CommandTPOfflinePlayer extends CommandBase {
     }
 
     public static NBTTagCompound getPlayerCompound(File playerData) throws CommandException {
-
         NBTTagCompound c;
 
         try {
-
-            FileInputStream fis = new FileInputStream(playerData);
-            DataInputStream is = new DataInputStream(new GZIPInputStream(fis));
-
+            DataInputStream is = new DataInputStream(new GZIPInputStream(new FileInputStream(playerData)));
             c = CompressedStreamTools.read(is);
-
-            fis.close();
             is.close();
         }
         catch (Exception e) {
@@ -181,21 +175,16 @@ public class CommandTPOfflinePlayer extends CommandBase {
     }
 
     public static void writePlayerCompound(File playerFile, NBTTagCompound playerCompound) throws CommandException {
-
         try {
-            FileOutputStream fos = new FileOutputStream(playerFile);
-            DataOutputStream os = new DataOutputStream(new GZIPOutputStream(fos));
-
+            DataOutputStream os = new DataOutputStream(new GZIPOutputStream(new FileOutputStream(playerFile)));
             CompressedStreamTools.write(playerCompound, os);
 
             os.close();
-            fos.close();
         }
         catch (Exception e) {
             e.printStackTrace();
             throw new CommandException(e.toString());
         }
-
     }
 
     public static class Player {

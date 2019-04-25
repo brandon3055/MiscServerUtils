@@ -362,6 +362,8 @@ public class ModuleDeleteScheduler extends SUModuleBase {
          * @return true if the handler is finished.
          */
         public boolean update() {
+            if (scheduledBy.dimension == 0) return true;
+
             MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
             if (!dimHandlerMap.containsKey(scheduledBy.dimension)) {
                 dimHandlerMap.put(scheduledBy.dimension, this);
@@ -406,14 +408,16 @@ public class ModuleDeleteScheduler extends SUModuleBase {
                             return true;
                         }
                         prepDimension(world);
+                        DimensionManager.unloadWorld(scheduledBy.dimension);
                     }
                     if (timer == 0) {
                         LogHelper.info("Deleting Dimension " + scheduledBy.dimension);
 
                         try {
                             LogHelper.info("Deleting Dimension Data in: " + dimFolder.getAbsolutePath());
-                            FileUtils.deleteDirectory(new File(dimFolder, "region"));
-                            FileUtils.deleteDirectory(new File(dimFolder, "data"));
+                            FileUtils.deleteDirectory(dimFolder);
+//                            FileUtils.deleteDirectory(new File(dimFolder, "region"));
+//                            FileUtils.deleteDirectory(new File(dimFolder, "data"));
                             LogHelper.info("Success! Dimension Deleted!");
                             messageAdmins("Dimension " + scheduledBy.dimension + " Has been Successfully Deleted!");
                             timer = -2;

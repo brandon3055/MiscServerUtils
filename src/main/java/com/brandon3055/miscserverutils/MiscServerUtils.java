@@ -4,10 +4,12 @@ import com.brandon3055.miscserverutils.commands.CommandListDims;
 import com.brandon3055.miscserverutils.commands.CommandTPOfflinePlayer;
 import com.brandon3055.miscserverutils.modules.ModuleAutoShutdown;
 import com.brandon3055.miscserverutils.modules.ModuleDeleteScheduler;
+import com.brandon3055.miscserverutils.modules.ModuleNukeBlocks;
 import com.brandon3055.miscserverutils.modules.ModulePlacementBlocker;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.network.NetworkCheckHandler;
@@ -29,9 +31,8 @@ public class MiscServerUtils
         ModuleRegistry.register(new ModuleDeleteScheduler());
         ModuleRegistry.register(new ModuleAutoShutdown(), false);
         ModuleRegistry.register(new ModulePlacementBlocker());
+        ModuleRegistry.register(new ModuleNukeBlocks(), false);
     }
-
-
 
     @NetworkCheckHandler
     public boolean networkCheck(Map<String, String> map, Side side) {
@@ -55,5 +56,10 @@ public class MiscServerUtils
         registerModules();
         ModuleRegistry.loadModules(configuration);
         MinecraftForge.EVENT_BUS.register(new ModEventHandler());
+    }
+
+    @Mod.EventHandler
+    public void Init(FMLInitializationEvent event) {
+        ModuleRegistry.init();
     }
 }
